@@ -40,12 +40,13 @@ def issue_token_pair(db: Session, user: User) -> TokenResponse:
 
 def register_user(db: Session, payload: UserCreate) -> User:
     """Register a new user with email/password credentials."""
-    existing = db.query(User).filter(User.email == payload.email).first()
+    email = payload.email.strip().lower()
+    existing = db.query(User).filter(User.email == email).first()
     if existing is not None:
         raise ConflictError("A user with this email already exists")
 
     user = User(
-        email=payload.email,
+        email=email,
         hashed_password=hash_password(payload.password),
         full_name=payload.full_name,
     )
@@ -58,7 +59,7 @@ def register_user(db: Session, payload: UserCreate) -> User:
 
 def authenticate_user(db: Session, email: str, password: str) -> tuple[User, TokenResponse]:
     """Verify email/password credentials and issue a token pair."""
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == email.strip().lower()).first()
     if user is None or user.hashed_password is None or not verify_password(password, user.hashed_password):
         raise UnauthorizedError("Invalid email or password")
 
@@ -119,6 +120,7 @@ def revoke_refresh_token(db: Session, refresh_token: str) -> None:
 
 def get_or_create_oauth_user(db: Session, email: str, full_name: str | None, provider: str = "google") -> User:
     """Fetch an existing user by email, or create a new OAuth-backed user."""
+    email = email.strip().lower()
     user = db.query(User).filter(User.email == email).first()
     if user is not None:
         return user
