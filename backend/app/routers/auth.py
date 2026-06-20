@@ -39,14 +39,14 @@ def _google_redirect_uri() -> str:
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-@limiter.limit("5/minute")
+@limiter.limit("20/minute")
 async def register(request: Request, payload: UserCreate, db: Session = Depends(get_db)) -> User:
     """Register a new user with email/password credentials."""
     return auth_service.register_user(db, payload)
 
 
 @router.post("/login", response_model=TokenResponse)
-@limiter.limit("10/minute")
+@limiter.limit("30/minute")
 async def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)) -> TokenResponse:
     """Authenticate with email/password and receive an access/refresh token pair."""
     _user, tokens = auth_service.authenticate_user(db, payload.email, payload.password)

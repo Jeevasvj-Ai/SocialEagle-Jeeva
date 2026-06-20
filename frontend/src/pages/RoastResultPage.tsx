@@ -1,10 +1,11 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { CategoryTags } from '../components/roasts/CategoryTags';
 import { FeedbackPanel } from '../components/roasts/FeedbackPanel';
 import { ScoreGauge } from '../components/roasts/ScoreGauge';
 import { GlassCard } from '../components/ui/GlassCard';
 import { GradientButton } from '../components/ui/GradientButton';
+import { RoosterMascot } from '../components/ui/RoosterMascot';
 import { TextReveal } from '../components/ui/TextReveal';
 import { PageWrapper } from '../components/layout/PageWrapper';
 import { useRoastForAssignment } from '../hooks/useRoasts';
@@ -18,13 +19,14 @@ export default function RoastResultPage() {
   return (
     <PageWrapper>
       <Box p={8}>
-        <TextReveal size="2xl" mb={6}>
-          Roast for Assignment #{id}
-        </TextReveal>
+        <HStack mb={6} gap={3}>
+          <RoosterMascot size={48} />
+          <TextReveal size="2xl">Judgment for Assignment #{id}</TextReveal>
+        </HStack>
 
         {isLoading && (
           <GlassCard>
-            <Text>Loading roast...</Text>
+            <Text>The rooster is reading your code. Brace yourself...</Text>
           </GlassCard>
         )}
 
@@ -37,9 +39,12 @@ export default function RoastResultPage() {
         {!isLoading && !error && !roast && (
           <GlassCard>
             <VStack align="flex-start" gap={4}>
-              <Text>No roast has been generated for this assignment yet.</Text>
+              <HStack gap={4}>
+                <RoosterMascot size={72} animated />
+                <Text>This one hasn't been roasted yet. It's sitting right there. Waiting. Nervously.</Text>
+              </HStack>
               <GradientButton onClick={() => void generate()} loading={isGenerating} disabled={isGenerating}>
-                Generate Roast
+                Unleash the Rooster
               </GradientButton>
               {generateError && <Text color="roast.savage">{generateError}</Text>}
             </VStack>
