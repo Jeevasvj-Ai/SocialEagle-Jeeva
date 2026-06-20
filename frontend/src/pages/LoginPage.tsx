@@ -1,5 +1,5 @@
 import { Box, Center, Separator, Stack, Text } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
 import { GoogleLoginButton } from '../components/auth/GoogleLoginButton';
 import { LoginForm } from '../components/auth/LoginForm';
 import { MeshBackground } from '../components/layout/MeshBackground';
@@ -7,8 +7,15 @@ import { PageWrapper } from '../components/layout/PageWrapper';
 import { GlassCard } from '../components/ui/GlassCard';
 import { RoosterMascot } from '../components/ui/RoosterMascot';
 import { TextReveal } from '../components/ui/TextReveal';
+import { useAuth } from '../hooks/useAuth';
 
 export default function LoginPage() {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
     <PageWrapper>
       <MeshBackground />
